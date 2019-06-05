@@ -111,13 +111,14 @@ class Player {
     constructor(name) {
         this.name = name;
         this.hand = [];
+        this.isIn = true;
     }
 
     receiveDealtCard(card) {
         if (card instanceof Card)
             this.hand.push(card);
         else
-            console.log("received invalid object");
+            console.log("received invalid object " + card);
     }
 
     discardCard(card) {
@@ -129,8 +130,12 @@ class Player {
 
     discardRandomCard() {
         let rnd = Math.floor(Math.random() * this.hand.length);
-        let card = this.hand.splice(rnd, 1);
+        let card = this.hand.splice(rnd);
         return card;
+    }
+
+    discardTopCard() {
+        return this.hand.pop();
     }
 
     showHand() {
@@ -150,6 +155,15 @@ class Player {
     getHandSize() {
         return this.hand.length;
     }
+
+    getIsIn() {
+        return this.isIn;
+    }
+
+    setIsIn(val) {
+        if (typeof val === "boolean")
+            this.isIn = val;
+    }
 }
 
 // bicycles = new Deck();
@@ -164,6 +178,12 @@ class Player {
     
 // player1.showHand();
 // // bicycles.showAll()
-// player1.discardRandomCard();
+// card = player1.discardTopCard();
 // console.log("\n\n\n\n\n");
-// player1.showHand();
+// // player1.showHand();
+// console.log(card instanceof Card);
+// console.log(typeof card);
+
+// card2 = new Card(SUITS['CLUBS'], 4);
+// card2.show();
+// console.log(typeof card2);
