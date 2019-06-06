@@ -37,6 +37,7 @@
         function clickHitPlayer(name) {
             player = game.findPlayer(name);
             game.hit(player);
+            hideInitialBtns(player);
             drawPlayerHand(player);
 
             if (!game.areAnyPlayersStillIn())
@@ -46,6 +47,7 @@
         function clickStay(name) {
             player = game.findPlayer(name);
             game.stay(player);
+            hideInitialBtns(player);
             drawPlayerHand(player);
 
             if (!game.areAnyPlayersStillIn())
@@ -61,6 +63,17 @@
                 drawPlayerHand(player);
                 showPlayerControls(player);
             })
+        }
+
+        function clickSurrender(name) {
+            game.surrender(game.findPlayer(name));
+
+            if (!game.areAnyPlayersStillIn())
+                showEndGame()
+        }
+
+        function clickDouble(name) {
+            game.doubleDown(game.findPlayer(name));
         }
 
         function showEndGame() {

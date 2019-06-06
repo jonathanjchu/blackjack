@@ -20,12 +20,12 @@ function drawPlayer(player) {
     output += `    <h3>${player.name}</h3>`;
     output += `    <div id="${player.name}-hand"></div>`;
     output += `</div>`;
-    output += `<div class="row>`;
     output += `<div class="col" id="${player.name}-controls">`;
     output += `    <button class="btn btn-success" onclick="clickHitPlayer('${player.name}');">Hit</button>`;
     output += `    <button class="btn btn-success" onclick="clickStay('${player.name}');">Stay</button>`;
+    output += `    <button class="btn btn-success" onclick="clickSurrender('${player.name}');" id="${player.name}-surrender">Surrender</button>`;
+    output += `    <button class="btn btn-success" onclick="clickDouble('${player.name}');" id="${player.name}-double">Double Down</button>`;
     output += `    <button class="btn btn-success split" onclick="clickSplit('${player.name}');" id="${player.name}-split">Split</button>`;
-    output += `</div>`;
     output += `</div>`;
     output += `<div class="col" id="${player.name}-output" class="output">`;
     output += `</div>`;
@@ -67,4 +67,14 @@ function playerOutput(player, msg) {
 
 function showSplit(player) {
     $(`#${player.name}-split`).css("visibility", "visible");
+}
+
+function hideInitialBtns(player) {
+    $(`#${player.name}-surrender`).css("visibility", "hidden");
+    $(`#${player.name}-double`).css("visibility", "hidden");
+}
+
+function showInitialBtns(player) {
+    $(`#${player.name}-surrender`).css("visibility", "visible");
+    $(`#${player.name}-double`).css("visibility", "visible");
 }

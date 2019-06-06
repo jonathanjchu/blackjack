@@ -67,16 +67,24 @@ class Card {
 
 
 class Deck {
-    constructor() {
+    constructor(numOfDecks=1) {
+        this.numOfDecks = numOfDecks;
+
         this.reset();
     }
 
-    reset() {
-        this.deck = [];
+    addDeck() {
         for (var key in SUITS) {
             for (var i = 1; i <= 13; i++) {
                 this.deck.push(new Card(SUITS[key], i));
             }
+        }
+    }
+
+    reset() {
+        this.deck = [];
+        for (let i=0; i<this.numOfDecks; i++) {
+            this.addDeck();
         }
     }
 
@@ -104,6 +112,10 @@ class Deck {
 
     dealCard() {
         return this.deck.pop();
+    }
+
+    getNumOfRemainingCards() {
+        return this.deck.length;
     }
 }
 
@@ -166,25 +178,3 @@ class Player {
             this.isIn = val;
     }
 }
-
-// bicycles = new Deck();
-// bicycles.shuffle();
-// // bicycles.showAll();
-
-// player1 = new Player("El Bob");
-
-// // deal 5 cards
-// for (var j=0; j<5; j++)
-//     player1.receiveDealtCard(bicycles.dealCard());
-    
-// player1.showHand();
-// // bicycles.showAll()
-// card = player1.discardTopCard();
-// console.log("\n\n\n\n\n");
-// // player1.showHand();
-// console.log(card instanceof Card);
-// console.log(typeof card);
-
-// card2 = new Card(SUITS['CLUBS'], 4);
-// card2.show();
-// console.log(typeof card2);
