@@ -29,8 +29,69 @@
         </div>
     </div>
 
+    <script src="draw.js" type="text/javascript"></script>
     <script src="blackjack.js" type="text/javascript"></script>
+    <script>
 
+
+        function clickHitPlayer(name) {
+            player = game.findPlayer(name);
+            game.hit(player);
+            drawPlayerHand(player);
+
+            if (!game.areAnyPlayersStillIn())
+                showEndGame()
+        }
+
+        function clickStay(name) {
+            player = game.findPlayer(name);
+            game.stay(player);
+            drawPlayerHand(player);
+
+            if (!game.areAnyPlayersStillIn())
+                showEndGame()
+        }
+
+        function clickSplit(name) {
+            game.split(game.findPlayer(name));
+
+            $("#players").empty();
+            game.getListOfPlayers().forEach(function (player) {
+                drawPlayer(player);
+                drawPlayerHand(player);
+                showPlayerControls(player);
+            })
+        }
+
+        function showEndGame() {
+            showRestartBtn();
+            drawRevealedDealerHand(game.getDealer());
+        }
+
+        function resetGame() {
+            game.newGame();
+
+            $("#btn-split").css("visibility", "hidden");
+            $("#players").empty();
+
+            game.getListOfPlayers().forEach(function (player) {
+                drawPlayer(player);
+                drawPlayerHand(player);
+                showPlayerControls(player);
+            })
+
+            if (game.canSplit()) {
+                showSplit(game.getListOfPlayers()[0]);
+            }
+
+            hideRestartBtn();
+            drawHiddenDealerHand(game.getDealer());
+        }
+
+        var game = new Blackjack();
+        resetGame();
+
+    </script>
 </body>
 
 </html>

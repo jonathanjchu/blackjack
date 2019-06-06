@@ -59,6 +59,7 @@ class Card {
         return this.strValue;
     }
 
+    // get numerical value
     getValue() {
         return this.value;
     }
