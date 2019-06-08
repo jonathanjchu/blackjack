@@ -157,6 +157,10 @@ class Player {
         });
     }
 
+    discardHand() {
+        this.hand = [];
+    }
+
     getPlayerName() {
         return this.name;
     }

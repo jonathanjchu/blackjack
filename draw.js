@@ -14,20 +14,25 @@ function drawRevealedDealerHand(dealer) {
     }
 }
 
+function clearPlayers() {
+    $("#players").empty();
+}
+
 function drawPlayer(player) {
     output = "";
-    output += `<div class="col">`;
+    output += `<div class="box">`;
     output += `    <h3>${player.name}</h3>`;
+    output += `    <h4>$${player.getBalance()}</h4>`;
     output += `    <div id="${player.name}-hand"></div>`;
     output += `</div>`;
-    output += `<div class="col" id="${player.name}-controls">`;
+    output += `<div class="box" id="${player.name}-controls">`;
     output += `    <button class="btn btn-success" onclick="clickHitPlayer('${player.name}');">Hit</button>`;
     output += `    <button class="btn btn-success" onclick="clickStay('${player.name}');">Stay</button>`;
     output += `    <button class="btn btn-success" onclick="clickSurrender('${player.name}');" id="${player.name}-surrender">Surrender</button>`;
     output += `    <button class="btn btn-success" onclick="clickDouble('${player.name}');" id="${player.name}-double">Double Down</button>`;
     output += `    <button class="btn btn-success split" onclick="clickSplit('${player.name}');" id="${player.name}-split">Split</button>`;
     output += `</div>`;
-    output += `<div class="col" id="${player.name}-output" class="output">`;
+    output += `<div class="box" id="${player.name}-output" class="output">`;
     output += `</div>`;
     $("#players").append(output);
 }
@@ -78,3 +83,4 @@ function showInitialBtns(player) {
     $(`#${player.name}-surrender`).css("visibility", "visible");
     $(`#${player.name}-double`).css("visibility", "visible");
 }
+

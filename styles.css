@@ -14,6 +14,17 @@ body {
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
 }
 
+#wager {
+    background-color: #16b120;
+    color: #fff;
+    font: 16px  'Segoe UI', Tahoma, Verdana, sans-serif;
+    border: 2px solid #fff;
+    height: 32px;
+    width: 60px;
+    border-radius: 2px;
+    padding: 3px;
+}
+
 .btn {
     border-radius: 6px;
     min-height: 24px;
@@ -36,6 +47,11 @@ body {
 }
 
 .col {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.box {
     margin: 24px 0;
 }
 

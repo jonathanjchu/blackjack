@@ -1,14 +1,16 @@
 
 
+
 class Blackjack {
     constructor() {
         this.shoe = new Deck(6);
         this.shoe.shuffle();
         this.dealer = new Player("Dealer");
         this.players = [];
+        this.results = {};
     }
 
-    newGame() {
+    newRound() {
         // reshuffle if shoe is <75%
         if (this.shoe.getNumOfRemainingCards() < 52 * 6 * 0.25) {
             console.log("Reshuffling Shoe");
@@ -17,10 +19,19 @@ class Blackjack {
         }
 
         this.dealer = new Player("Dealer");
-        this.players = [];
+        for (let i=0; i<this.players.length; i++) {
+            if (this.players[i].getIsSplitPlayer()) {
+                this.players.splice(i);
+            }
+            else {
+                this.players[i].discardHand(); 
+                this.players[i].setIsIn(true);               
+            }
+        }
 
-        this.addPlayer();
+    }
 
+    dealInitialCards() {
         // deal first cards
         this.players.forEach(player => this.hit(player));
         this.dealer.receiveDealtCard(this.shoe.dealCard());
@@ -28,7 +39,6 @@ class Blackjack {
         // deal second cards
         this.players.forEach(player => this.hit(player));
         this.dealer.receiveDealtCard(this.shoe.dealCard());
-
     }
 
     canSplit() {
@@ -49,8 +59,8 @@ class Blackjack {
         return this.players.find(x => x.name == name);
     }
 
-    addPlayer() {
-        let player = new Player("Player" + (this.players.length + 1));
+    addPlayer(wager=100) {
+        let player = new BlackjackGambler("Player" + (this.players.length + 1), wager);
 
         this.players.push(player);
 
@@ -65,12 +75,12 @@ class Blackjack {
         hidePlayerControls(player);
         player.setIsIn(false);
     }
-    
+
     hit(player) {
         player.receiveDealtCard(this.shoe.dealCard());
         let handSize = player.getHandSize();
 
-        if (this.countHandValue(player) > 21 || handSize >= 5) {
+        if (this.countHandValue(player) > 21) {
             this.playerOut(player);
 
             this.checkEndGame();
@@ -86,17 +96,31 @@ class Blackjack {
     split(player) {
         let card = player.discardTopCard();
         let newPlayer = this.addPlayer();
+        newPlayer.setIsSplitPlayer(true);
         newPlayer.receiveDealtCard(card);
+
+        player.receiveDealtCard(this.shoe.dealCard());
+        newPlayer.receiveDealtCard(this.shoe.dealCard());
+    }
+
+    push(player) {
+
     }
 
     surrender(player) {
         this.playerOut(player);
-        
+        player.setWager(player.getWager() / 2);
+        player.loseWager();
+
         this.checkEndGame();
     }
 
     doubleDown(player) {
-
+        player.setWager(player.getWager() * 2);
+        this.hit(player);
+        if (player.getIsIn())
+            this.stay(player);
+        
     }
 
     checkEndGame() {
@@ -145,11 +169,15 @@ class Blackjack {
     }
 
     dealerPlay() {
-        while (this.countHandValue(this.dealer) < 16 && this.dealer.getHandSize() < 5) {
+        while (this.countHandValue(this.dealer) <= 16) {
             // dealer hit
             let card = this.shoe.dealCard();
             this.dealer.receiveDealtCard(card);
         }
+    }
+
+    getResults() {
+        return this.results;
     }
 
     isBlackjack(player) {
@@ -161,16 +189,30 @@ class Blackjack {
             let player = this.players[i];
             let playerVal = this.countHandValue(player);
 
-            if (this.isBlackjack(this.dealer)) {
-                $(`#${player.name}-output`).append("House wins!");
+            let isDealerBJ = this.isBlackjack(this.dealer);
+            let isPlayerBJ = this.isBlackjack(player);
+
+            console.log(player);
+
+            if (isDealerBJ && isPlayerBJ) {
+                push(player);
+                player.setWager(0);
+                this.results[player.name] = "Draw...";
             }
-            else if (this.isBlackjack(player)) {
-                $(`#${player.name}-output`).append("Blackjack! Player wins!");
+            if (isDealerBJ) {
+                player.loseWager();
+                this.results[player.name] = "House wins!";
+            }
+            else if (isPlayerBJ) {
+                player.setWager(player.getWager() * 1.5);
+                player.winWager();
+                this.results[player.name] = "Blackjack! Player wins!";
             }
             else {
                 if (playerVal > 21) {
                     // player busted, show results
-                    $(`#${player.name}-output`).append("Bust! House wins!");
+                    player.loseWager();
+                    this.results[player.name] = "Bust! House wins!";
                 }
                 else {
                     // player did not bust
@@ -180,18 +222,24 @@ class Blackjack {
                     let dealerVal = this.countHandValue(this.dealer);
 
                     if (dealerVal > 21) {
-                        $(`#${player.name}-output`).append("Dealer busted! Player wins!");
+                        player.winWager();
+                        this.results[player.name] = "Dealer busted! Player wins!";
+                    }
+                    else if (playerVal == dealerVal) {
+                        this.push(player);
+                        player.setWager(0);
+                        this.results[player.name] = "Draw...";
                     }
                     else if (playerVal > dealerVal) {
-                        $(`#${player.name}-output`).append("Player wins!");
+                        player.winWager();
+                        this.results[player.name] = "Player wins!";
                     }
                     else {
-                        $(`#${player.name}-output`).append("House wins!");
+                        player.loseWager();
+                        this.results[player.name] = "House wins!";
                     }
                 }
             }
-            $(`#${player.name}-output`).children(`#choices`).css("visibility", "hidden");
         };
     }
 }
-
